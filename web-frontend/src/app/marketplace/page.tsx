@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { ShoppingCart, Leaf, Loader2, ArrowRight } from "lucide-react"
 import Sidebar from "@/components/ui/Sidebar"
 import { PageHeader } from "@/components/ui/PageHeader"
+import { API_URL } from "@/config"
 
 interface Listing {
   id: string
@@ -33,7 +34,7 @@ export default function MarketplacePage() {
 
   const fetchListings = async () => {
     try {
-        const res = await fetch("http://localhost:5000/api/marketplace")
+        const res = await fetch(`${API_URL}/api/marketplace`)
         if (res.ok) {
             const data = await res.json()
             setListings(data)
@@ -53,7 +54,7 @@ export default function MarketplacePage() {
     if (!token) return
 
     try {
-        const res = await fetch("http://localhost:5000/api/marketplace/buy", {
+        const res = await fetch(`${API_URL}/api/marketplace/buy`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

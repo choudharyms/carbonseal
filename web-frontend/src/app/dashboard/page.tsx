@@ -65,8 +65,8 @@ export default function DashboardPage() {
     const fetchData = async () => {
       try {
         const [resPublic, resMy] = await Promise.all([
-             fetch("http://localhost:5000/api/projects"),
-             fetch("http://localhost:5000/api/projects/my", {
+             fetch(`${API_URL}/api/projects`),
+             fetch(`${API_URL}/api/projects/my`, {
                 headers: { Authorization: `Bearer ${token}` }
              })
         ])

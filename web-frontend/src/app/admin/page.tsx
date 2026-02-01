@@ -7,6 +7,7 @@ import { ShieldCheck, MapPin, Eye, Loader2 } from "lucide-react"
 import Sidebar from "@/components/ui/Sidebar"
 import { PageHeader } from "@/components/ui/PageHeader"
 import { Badge } from "@/components/ui/badge"
+import { API_URL } from "@/config"
 
 export default function AdminPage() {
   const [projects, setProjects] = useState<any[]>([])
@@ -22,7 +23,7 @@ export default function AdminPage() {
     if (!token) return
 
     try {
-        const res = await fetch("http://localhost:5000/api/admin/pending", {
+        const res = await fetch(`${API_URL}/api/admin/pending`, {
             headers: { Authorization: `Bearer ${token}` }
         })
         if (res.ok) {
@@ -41,7 +42,7 @@ export default function AdminPage() {
     const token = localStorage.getItem("token")
     
     try {
-        const res = await fetch("http://localhost:5000/api/admin/verify", {
+        const res = await fetch(`${API_URL}/api/admin/verify`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

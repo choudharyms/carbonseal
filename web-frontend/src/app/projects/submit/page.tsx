@@ -12,6 +12,7 @@ import Sidebar from "@/components/ui/Sidebar"
 import { PageHeader } from "@/components/ui/PageHeader"
 import { WalletConnect } from "@/components/ui/WalletConnect"
 import { Badge } from "@/components/ui/badge"
+import { API_URL } from "@/config"
 
 export default function SubmitProjectPage() {
   const router = useRouter()
@@ -49,7 +50,7 @@ export default function SubmitProjectPage() {
         boundary = null
       }
 
-      const res = await fetch("http://localhost:5000/api/projects", {
+      const res = await fetch(`${API_URL}/api/projects`, {
         method: "POST",
         headers: { 
             "Content-Type": "application/json",

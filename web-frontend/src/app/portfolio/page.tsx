@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/ui/PageHeader"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { API_URL } from "@/config"
 
 export default function PortfolioPage() {
   const [holdings, setHoldings] = useState<any[]>([])
@@ -27,7 +28,7 @@ export default function PortfolioPage() {
     if (!token) return
 
     try {
-        const res = await fetch("http://localhost:5000/api/portfolio", {
+        const res = await fetch(`${API_URL}/api/portfolio`, {
             headers: { Authorization: `Bearer ${token}` }
         })
         if (res.ok) {
@@ -48,7 +49,7 @@ export default function PortfolioPage() {
     const token = localStorage.getItem("token")
     
     try {
-        const res = await fetch("http://localhost:5000/api/portfolio/retire", {
+        const res = await fetch(`${API_URL}/api/portfolio/retire`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -76,7 +77,7 @@ export default function PortfolioPage() {
         const holding = holdings.find(h => h.id === selling)
         if (!holding) return
 
-        const res = await fetch("http://localhost:5000/api/marketplace/list", {
+        const res = await fetch(`${API_URL}/api/marketplace/list`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

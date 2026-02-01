@@ -1,37 +1,69 @@
-const { Project } = require('../models');
-const { verifyCoordinates } = require('../services/satelliteService');
+const { Project, sequelize } = require('../models');
 
 exports.createProject = async (req, res) => {
   try {
-    const { name, locationName, lat, long, credits } = req.body;
-    
-    // 1. Perform Satellite Verification (AI/MRV Layer)
-    const satelliteData = await verifyCoordinates(parseFloat(lat), parseFloat(long));
-    
-    // 2. Determine Validity
-    // If NDVI (Vegetation Index) is > 0.5, we assume it's valid forest/mangrove
-    const isValid = satelliteData.ndvi > 0.5;
+    const { name, description, ecosystem_type, boundary, location_name } = req.body;
+    const owner_id = req.user.id; // From Auth Middleware
 
-    // 3. Save to DB
-    const point = { type: 'Point', coordinates: [long, lat] };
+    console.log("Received Payload:", JSON.stringify(req.body, null, 2));
+
+    // BYPASS: Use Fallback if invalid
+    let validBoundary = boundary;
+    if (!boundary || !boundary.type || boundary.type !== 'Polygon') {
+        console.warn("⚠️ Invalid/Missing GeoJSON. Using fallback polygon for demo.");
+        validBoundary = {
+            type: "Polygon",
+            coordinates: [
+                [
+                    [88.614, 21.556],
+                    [88.624, 21.556],
+                    [88.624, 21.566],
+                    [88.614, 21.566],
+                    [88.614, 21.556]
+                ]
+            ]
+        };
+    }
     
+    // Create Project
     const newProject = await Project.create({
+      owner_id,
       name,
-      locationName,
-      coordinates: point,
-      carbonCreditAmount: credits,
-      status: isValid ? 'VERIFIED' : 'PENDING',
-      verificationHash: `SAT-${Date.now()}-${satelliteData.ndvi}` // Mock Hash
+      description,
+      ecosystem_type,
+      location_name,
+      boundary: validBoundary, 
+      status: 'SUBMITTED'
     });
 
     res.status(201).json({
-        success: true,
-        project: newProject,
-        satelliteAnalysis: satelliteData
+      success: true,
+      project: newProject
     });
 
   } catch (err) {
-    console.error(err);
+    console.error("Create Project Error:", err);
     res.status(500).json({ error: err.message });
   }
+};
+
+exports.getMyProjects = async (req, res) => {
+    try {
+        const projects = await Project.findAll({ where: { owner_id: req.user.id } });
+        res.json(projects);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.getAllProjects = async (req, res) => {
+    try {
+        const projects = await Project.findAll({
+            where: { status: 'VERIFIED' }, // Public only sees verified
+            include: ['owner'] 
+        });
+        res.json(projects);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };

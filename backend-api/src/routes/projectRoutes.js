@@ -1,15 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { Project } = require('../models');
 const projectController = require('../controllers/projectController');
+const authMiddleware = require('../middleware/authMiddleware');
 
-// GET all
-router.get('/', async (req, res) => {
-  const projects = await Project.findAll();
-  res.json(projects);
-});
+// Public
+router.get('/', projectController.getAllProjects);
 
-// POST new (Uses the Controller we just made)
-router.post('/', projectController.createProject);
+// Protected (Developer)
+router.post('/', authMiddleware, projectController.createProject);
+router.get('/my', authMiddleware, projectController.getMyProjects);
 
 module.exports = router;

@@ -1,69 +1,39 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "./BlueCarbonToken.sol";
-import "./CarbonNFT.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract CarbonRegistry is Ownable {
     
-    struct Project {
-        uint256 id;
-        string name;
-        string location;
-        uint256 carbonCredits;
-        string ipfsMetadata; // Link to MRV Report
-        bool isVerified;
+    struct ProjectData {
         address owner;
+        string geoHash; // IPFS hash of geometry/metadata
+        bool isVerified;
     }
 
-    uint256 public projectCount;
-    mapping(uint256 => Project) public projects;
-    
-    BlueCarbonToken public tokenContract;
-    CarbonNFT public nftContract;
+    mapping(uint256 => ProjectData) public projects;
+    uint256 public nextProjectId = 1;
 
-    event ProjectRegistered(uint256 indexed id, string name, address owner);
-    event ProjectVerified(uint256 indexed id, uint256 creditsMinted);
+    event ProjectRegistered(uint256 indexed projectId, address indexed owner, string geoHash);
+    event ProjectVerified(uint256 indexed projectId);
 
-    constructor(address _tokenAddress, address _nftAddress) Ownable(msg.sender) {
-        tokenContract = BlueCarbonToken(_tokenAddress);
-        nftContract = CarbonNFT(_nftAddress);
+    constructor() Ownable(msg.sender) {}
+
+    function registerProject(address _owner, string memory _geoHash) external onlyOwner returns (uint256) {
+        uint256 projectId = nextProjectId++;
+        projects[projectId] = ProjectData({
+            owner: _owner,
+            geoHash: _geoHash,
+            isVerified: false
+        });
+
+        emit ProjectRegistered(projectId, _owner, _geoHash);
+        return projectId;
     }
 
-    // 1. Register a new Carbon Project
-    function registerProject(string memory _name, string memory _location, string memory _ipfsMetadata) public {
-        projectCount++;
-        projects[projectCount] = Project(
-            projectCount,
-            _name,
-            _location,
-            0,
-            _ipfsMetadata,
-            false,
-            msg.sender
-        );
-        emit ProjectRegistered(projectCount, _name, msg.sender);
-    }
-
-    // 2. Verify Project (Admin/MRV Oracle Only) and Mint Tokens/NFT
-    function verifyProject(uint256 _projectId, uint256 _creditAmount) public onlyOwner {
-        Project storage proj = projects[_projectId];
-        require(!proj.isVerified, "Project already verified");
-
-        proj.carbonCredits = _creditAmount;
-        proj.isVerified = true;
-
-        // A. Mint ERC-20 Credits to Project Owner
-        tokenContract.mint(proj.owner, _creditAmount * 10**18); // Assumes 18 decimals
-
-        // B. Mint NFT representing the project Certificate
-        nftContract.safeMint(proj.owner, proj.ipfsMetadata);
-
-        emit ProjectVerified(_projectId, _creditAmount);
-    }
-
-    function getProject(uint256 _id) public view returns (Project memory) {
-        return projects[_id];
+    function verifyProject(uint256 _projectId) external onlyOwner {
+        require(projects[_projectId].owner != address(0), "Project does not exist");
+        projects[_projectId].isVerified = true;
+        emit ProjectVerified(_projectId);
     }
 }

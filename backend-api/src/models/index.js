@@ -1,31 +1,30 @@
 const sequelize = require('../config/database');
-const { DataTypes } = require('sequelize');
+const User = require('./User');
+const Project = require('./Project');
+const Verification = require('./Verification');
+const Listing = require('./Listing');
 
-// Define Carbon Project Model with Geo-Spatial Data
-const Project = sequelize.define('Project', {
-  id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-  name: { type: DataTypes.STRING, allowNull: false },
-  locationName: { type: DataTypes.STRING, allowNull: false },
-  // PostGIS Geometry Column (Point: Lat/Long)
-  coordinates: { 
-    type: DataTypes.GEOMETRY('POINT'), 
-    allowNull: false 
-  },
-  // Polygon for project area boundaries
-  areaBoundary: {
-    type: DataTypes.GEOMETRY('POLYGON'),
-    allowNull: true
-  },
-  carbonCreditAmount: { type: DataTypes.FLOAT, defaultValue: 0 },
-  status: { 
-    type: DataTypes.ENUM('PENDING', 'VERIFIED', 'RETIRED'), 
-    defaultValue: 'PENDING' 
-  },
-  ipfsMetadataHash: { type: DataTypes.STRING }, // Link to report
-  verificationHash: { type: DataTypes.STRING } // Blockchain hash
-});
+// Associations
 
-// Sync and Enable PostGIS
+// User <-> Project
+User.hasMany(Project, { foreignKey: 'owner_id', as: 'projects' });
+Project.belongsTo(User, { foreignKey: 'owner_id', as: 'owner' });
+
+// Project <-> Verification
+Project.hasMany(Verification, { foreignKey: 'project_id', as: 'verifications' });
+Verification.belongsTo(Project, { foreignKey: 'project_id', as: 'project' });
+
+// User <-> Verification (Auditor)
+User.hasMany(Verification, { foreignKey: 'verifier_id', as: 'audits' });
+Verification.belongsTo(User, { foreignKey: 'verifier_id', as: 'auditor' });
+
+// Listing Associations
+Project.hasMany(Listing, { foreignKey: 'project_id', as: 'listings' });
+Listing.belongsTo(Project, { foreignKey: 'project_id', as: 'project' });
+
+User.hasMany(Listing, { foreignKey: 'seller_id', as: 'sales' });
+Listing.belongsTo(User, { foreignKey: 'seller_id', as: 'seller' });
+
 const initDB = async () => {
   try {
     await sequelize.authenticate();
@@ -34,11 +33,20 @@ const initDB = async () => {
     // Enable PostGIS Extension
     await sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis;');
     
+    // Sync models
     await sequelize.sync({ alter: true });
     console.log('✅ Models synced & PostGIS enabled.');
   } catch (error) {
     console.error('❌ Database error:', error);
+    process.exit(1);
   }
 };
 
-module.exports = { sequelize, Project, initDB };
+module.exports = { 
+  sequelize, 
+  initDB, 
+  User, 
+  Project, 
+  Verification, 
+  Listing 
+};

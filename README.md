@@ -1,140 +1,121 @@
-# Carbon Seal
+# Carbon Seal v2.0 🌍💙
 
-**Blockchain-Based Blue Carbon Registry & MRV**
+**The National Infrastructure for Blue Carbon Assets.**
 
-Carbon Seal is a decentralized platform designed to enable transparent **Measurement, Reporting & Verification (MRV)** of blue carbon credits and to build an open registry for tracking carbon sequestration activities using blockchain technology. The system integrates smart contracts, backend APIs, and frontend interfaces to provide public accountability and trustless verification of environmental impact data.
+Carbon Seal is a production-grade **Digital MRV (dMRV) & Registry Platform** designed to bring sovereign-grade transparency to the Blue Carbon market. By combining satellite-based verification (Sentinel-2 data integration) with blockchain-based tokenization, Carbon Seal eliminates greenwashing and creates high-fidelity digital assets representing verified carbon sequestration.
 
----
-
-## 🚀 Features
-
-- 🔗 **Smart Contracts**  
-  Solidity contracts to govern issuance and transfer of carbon credits in a trustless environment.
-
-- 📊 **MRV (Measurement, Reporting & Verification)**  
-  Tools to record carbon data and certify environmental claims.
-
-- 🌐 **Web Interface**  
-  User-friendly frontend to interact with blockchain, view project data & credit status.
-
-- 📱 **Mobile Support**  
-  App for mobile access with essential carbon footprint and credit information.
-
-- 🛠 **Modular Architecture**  
-  Separate components for smart contracts, backend services, web frontend, and mobile app for scalable development.
+![Dashboard Preview](https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop)
 
 ---
 
-## 📁 Repository Structure
+## 🚀 Key Capabilities
 
+### 🛰️ Satellite-First Verification (dMRV)
+- **Automated Analysis:** Integration with Sentinel-2 L2A satellite feeds to calculate NDVI (Normalized Difference Vegetation Index) for mangrove and seagrass ecosystems.
+- **Geospatial Integrity:** PostGIS-powered boundary validation ensuring no double-counting of protected areas.
+- **Dynamic Credit Calculation:** Algorithms that convert biomass density and area into precise Carbon Credit tonnage.
+
+### ⛓️ Enterprise Blockchain Registry
+- **Trustless Minting:** Smart contracts (ERC-1155) automatically mint "Blue Carbon Tokens" only after algorithmic verification is passed.
+- **Immutable Audit Trail:** Every verification event and status change is hashed and stored on-chain.
+- **Custodial Wallets:** Built-in custodial wallet generation for non-crypto-native institutional users, abstracting away private key management.
+
+### 💹 Institutional Marketplace
+- **Order Book:** A compliant environment for listing and trading verified assets.
+- **Retirement Mechanism:** "Burn" functionality to permanently retire credits and generate impact certificates for offset claims.
+- **Portfolio Management:** Real-time dashboards for asset holders to track value, volume, and provenance.
+
+---
+
+## 🛠️ Technology Stack
+
+**Frontend (Enterprise UI)**
+- **Framework:** Next.js 14 (App Router)
+- **Styling:** Tailwind CSS, Lucide Icons, Shadcn/UI
+- **Design System:** "Glass" aesthetic with Emerald/Slate government-grade palette.
+
+**Backend (Core Logic)**
+- **Runtime:** Node.js
+- **Framework:** Express.js
+- **Database:** PostgreSQL with PostGIS extension (via Sequelize ORM).
+- **Security:** Helmet, CORS, JWT Authentication, bcrypt encryption.
+
+**Blockchain (Infrastructure)**
+- **Network:** Ethereum / Polygon Compatible (Hardhat Development Node).
+- **Contracts:** Solidity (OpenZeppelin ERC-1155).
+- **Integration:** Ethers.js v6.
+
+**Deployment**
+- **Web:** Vercel
+- **API:** Render
+- **Database:** Render (Managed PostgreSQL)
+
+---
+
+## 📂 Repository Structure
+
+```bash
 carbonseal/
-├── smart-contracts/ # Solidity contracts for registry & token logic
-├── backend-api/ # Server for MRV data, integrations, queries
-├── web-frontend/ # Web UI to view & interact with registry
-├── mobile-app/ # Mobile application
-├── .env.example # Environment configuration template
-├── README.md # Project overview
-
-
----
-
-## 🧠 Tech Stack
-
-| Layer              | Technology |
-|-------------------|------------|
-| Smart Contracts    | Solidity   |
-| Backend API        | Node.js / Express (or similar) |
-| Frontend           | JavaScript / React / Web3.js |
-| Mobile App         | React Native / Expo |
-| Blockchain         | Ethereum or Compatible EVM |
+├── web-frontend/       # Next.js Enterprise Dashboard & Public Site
+├── backend-api/        # Node.js Express Server & dMRV Logic
+├── smart-contracts/    # Solidity Contracts & Deployment Scripts
+├── mobile-app/         # Companion React Native App (In Development)
+└── render.yaml         # Infrastructure-as-Code for Cloud Deployment
+```
 
 ---
 
 ## ⚡ Getting Started
 
-frontend at https://github.com/choudharyms/carbonseal-frontend
-
 ### Prerequisites
-
-Install the following on your machine:
-
-- Node.js (v16+)
-- npm / yarn
-- Hardhat / Truffle
-- Ethereum wallet (MetaMask)
+- Node.js (v18+)
+- PostgreSQL (Local or Cloud)
 - Git
+
+### 1. Installation
+```bash
+git clone https://github.com/choudharyms/carbonseal.git
+cd carbonseal
+```
+
+### 2. Backend Setup
+```bash
+cd backend-api
+npm install
+# Configure .env with DATABASE_URL and JWT_SECRET
+npm start
+```
+
+### 3. Frontend Setup
+```bash
+cd web-frontend
+npm install
+# Configure .env.local with NEXT_PUBLIC_API_URL
+npm run dev
+```
+
+### 4. Smart Contracts (Local Dev)
+```bash
+cd smart-contracts
+npm install
+npx hardhat node
+npx hardhat run scripts/deploy.js --network localhost
+```
 
 ---
 
-### Setup
+## 🔮 Roadmap
 
-1. **Clone the repo**
-   ```bash
-   git clone https://github.com/choudharyms/carbonseal.git
-   cd carbonseal
-Install dependencies
+- [x] **v1.0:** Core Registry & Tokenization
+- [x] **v2.0:** Digital MRV & Satellite Integration
+- [ ] **v3.0:** AI-powered Biomass Estimation Models
+- [ ] **v3.5:** Cross-chain Bridging (Polygon/Celo)
 
-npm install
-Configure environment
-Create a .env from .env.example and update:
+---
 
-RPC_URL=…
-PRIVATE_KEY=…
-DATABASE_URL=…
-🛠️ Smart Contracts
-Compile & deploy:
+## 📄 License
+Distributed under the MIT License. See `LICENSE` for details.
 
-cd smart-contracts
-npx hardhat compile
-npx hardhat deploy --network <network>
-🧪 Testing
-Run unit tests:
+---
 
-npm test
-📦 API
-Start backend server:
-
-cd backend-api
-npm start
-Expected API endpoints:
-
-GET /projects – List carbon projects
-
-POST /credits – Issue carbon credits
-
-GET /credits/:id – View credit status
-
-(Add endpoints based on your implementation.)
-
-📱 Mobile & Web
-Start frontend:
-
-cd web-frontend
-npm start
-Start mobile app:
-
-cd mobile-app
-npm start
-📌 Usage
-Connect wallet
-
-Register projects for blue carbon sequestration
-
-Record MRV data
-
-Issue & transfer carbon credits
-
-View on blockchain explorer
-
-🧩 Contributing
-Contributions are welcome! Please open issues or pull requests for improvements.
-
-📄 License
-Distributed under the MIT License.
-See LICENSE for details.
-
-🤝 Acknowledgements
-Built as an open-source system to improve transparency in carbon credit markets
-
-Based on blockchain, MRV best practices, and decentralization principles
-
+**Built with 💙 for the Planet.**

@@ -52,6 +52,8 @@ carbonseal/
 
 ## ⚡ Getting Started
 
+frontend at https://github.com/choudharyms/carbonseal-frontend
+
 ### Prerequisites
 
 Install the following on your machine:

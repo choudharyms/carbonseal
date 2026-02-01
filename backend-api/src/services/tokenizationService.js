@@ -5,25 +5,6 @@ const contracts = require('../config/contracts.json');
 const { decrypt } = require('../utils/crypto');
 const { User } = require('../models');
 
-// Human-Readable ABIs
-const TokenABI = [
-  "function mint(address to, uint256 id, uint256 amount, uint256 projectId, bytes data)",
-  "function balanceOf(address account, uint256 id) view returns (uint256)",
-  "function uri(uint256 id) view returns (string)"
-];
-
-const RegistryABI = [
-  "function registerProject(address owner, string geoHash) external returns (uint256)",
-  "function verifyProject(uint256 projectId) external"
-];
-
-const { ethers } = require('ethers');
-const fs = require('fs');
-const path = require('path');
-const contracts = require('../config/contracts.json');
-const { decrypt } = require('../utils/crypto');
-const { User } = require('../models');
-
 const MOCK_MODE = process.env.MOCK_BLOCKCHAIN === 'true';
 
 // Human-Readable ABIs

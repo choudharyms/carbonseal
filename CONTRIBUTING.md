@@ -1,6 +1,6 @@
 # 🌍 Contributing to Carbon Seal
 
-> "First, solve the problem. Then, write the code." – John Johnson
+![](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=aura)
 
 **Welcome, and thank you for your interest in contributing to Carbon Seal!**
 
@@ -26,8 +26,8 @@ We welcome contributions of all kinds!
 
 This project is built by passionate developers. A huge shoutout to our contributors:
 
-*   [**choudharyms**](https://github.com/choudharyms)
-*   **Madhusudan Singh**
+*   [**choudharyms**](https://github.com/choudharyms) **Madhusudan Singh**
+   
 
 *(Your name could be here! We'd love to see your first PR.)*
 
